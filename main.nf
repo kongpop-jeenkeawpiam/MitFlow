@@ -7,6 +7,7 @@ include { INPUT_CHECK_QC }       from './subworkflows/local/input_check_qc.nf'
 include { ALIGNMENT_PICARD }     from './subworkflows/local/alignment_picard.nf'
 include { VARIANT_CALLING }      from './subworkflows/local/variant_calling.nf'
 include { ANNOTATION_PHYLOGENY } from './subworkflows/local/annotation_phylogeny.nf'
+include { REPORTING }            from './subworkflows/local/reporting.nf'
 
 // Print pipeline info
 log.info """\
@@ -37,6 +38,14 @@ workflow {
                 
                 if (params.annovar_db) {
                     ANNOTATION_PHYLOGENY(VARIANT_CALLING.out.vcf, ALIGNMENT_PICARD.out.bam, file(params.annovar_db))
+                    
+                    if (params.web_scripts_dir) {
+                        ch_annovar = ANNOTATION_PHYLOGENY.out.txt.map { meta, txt -> txt }.collect()
+                        ch_haplogrep = ANNOTATION_PHYLOGENY.out.qc.map { meta, qc -> qc }.collect() // Just to wait for it
+                        ch_iqtree = ANNOTATION_PHYLOGENY.out.contree
+                        
+                        REPORTING(file(params.web_scripts_dir), ch_annovar, ch_haplogrep, ch_iqtree)
+                    }
                 }
             }
         }

@@ -22,4 +22,9 @@ workflow ANNOTATION_PHYLOGENY {
         .set { ch_fasta_files }
     
     IQTREE2 ( ch_fasta_files )
+    
+    emit:
+    txt = ANNOVAR.out.txt
+    qc  = HAPLOGREP3.out.qc
+    contree = IQTREE2.out.contree
 }
