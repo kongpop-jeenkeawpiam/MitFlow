@@ -3,7 +3,8 @@
 nextflow.enable.dsl = 2
 
 // Include subworkflows
-include { INPUT_CHECK_QC } from './subworkflows/local/input_check_qc.nf'
+include { INPUT_CHECK_QC }   from './subworkflows/local/input_check_qc.nf'
+include { ALIGNMENT_PICARD } from './subworkflows/local/alignment_picard.nf'
 
 // Print pipeline info
 log.info """\
@@ -24,6 +25,11 @@ workflow {
             }
         
         INPUT_CHECK_QC(ch_input)
+        
+        // Ensure params.fasta and params.bwa_index are provided for this step
+        if (params.fasta && params.bwa_index) {
+            ALIGNMENT_PICARD(INPUT_CHECK_QC.out.reads, file(params.fasta), file(params.bwa_index))
+        }
     } else {
         log.error "Please provide an input with --input"
         exit 1
