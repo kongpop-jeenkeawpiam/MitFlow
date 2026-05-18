@@ -2,6 +2,9 @@
 
 nextflow.enable.dsl = 2
 
+// Include subworkflows
+include { INPUT_CHECK_QC } from './subworkflows/local/input_check_qc.nf'
+
 // Print pipeline info
 log.info """\
     M I T O G E X   N E X T F L O W   P I P E L I N E
@@ -12,5 +15,17 @@ log.info """\
     .stripIndent()
 
 workflow {
-    // Pipeline implementation will go here
+    if (params.input) {
+        ch_input = Channel.fromFilePairs(params.input, checkIfExists: true)
+            .map { id, reads -> 
+                def meta = [:]
+                meta.id = id
+                [meta, reads]
+            }
+        
+        INPUT_CHECK_QC(ch_input)
+    } else {
+        log.error "Please provide an input with --input"
+        exit 1
+    }
 }
