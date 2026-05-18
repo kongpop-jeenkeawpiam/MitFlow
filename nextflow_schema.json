@@ -1,0 +1,103 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "https://raw.githubusercontent.com/nf-core/mitogex/master/nextflow_schema.json",
+    "title": "nf-core/mitogex pipeline parameters",
+    "description": "MitoGEx Nextflow Pipeline",
+    "type": "object",
+    "definitions": {
+        "input_output_options": {
+            "title": "Input/output options",
+            "type": "object",
+            "description": "Define where the pipeline should find input data and save output data.",
+            "required": ["input"],
+            "properties": {
+                "input": {
+                    "type": "string",
+                    "description": "Path to comma-separated file containing information about the samples in the experiment.",
+                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location."
+                },
+                "outdir": {
+                    "type": "string",
+                    "default": "results",
+                    "description": "The output directory where the results will be saved.",
+                    "help_text": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure."
+                },
+                "project_title": {
+                    "type": "string",
+                    "default": "MitoGEx_Project",
+                    "description": "Title of the project for reports.",
+                    "help_text": "This string will be used as the title in generated reports."
+                }
+            }
+        },
+        "tool_options": {
+            "title": "Tool options",
+            "type": "object",
+            "properties": {
+                "qc_tool": {
+                    "type": "string",
+                    "default": "fastp",
+                    "description": "Tool to use for quality control.",
+                    "help_text": "Specify the tool to be used for read quality control (e.g., fastp)."
+                }
+            }
+        },
+        "reference_options": {
+            "title": "Reference genome options",
+            "type": "object",
+            "description": "Reference genome related files and options required for the workflow.",
+            "properties": {
+                "fasta": {
+                    "type": "string",
+                    "description": "Path to FASTA reference.",
+                    "help_text": "Path to the reference genome FASTA file. Required if reference is missing."
+                },
+                "bwa_index": {
+                    "type": "string",
+                    "description": "Path to BWA index.",
+                    "help_text": "Path to directory containing the BWA index for the reference genome."
+                },
+                "fai": {
+                    "type": "string",
+                    "description": "Path to FASTA index.",
+                    "help_text": "Path to the FASTA index (.fai) for the reference genome."
+                },
+                "dict": {
+                    "type": "string",
+                    "description": "Path to sequence dictionary.",
+                    "help_text": "Path to the sequence dictionary (.dict) for the reference genome."
+                },
+                "annovar_db": {
+                    "type": "string",
+                    "description": "Path to Annovar database.",
+                    "help_text": "Path to the Annovar database directory for variant annotation."
+                }
+            }
+        },
+        "web_options": {
+            "title": "Web report options",
+            "type": "object",
+            "properties": {
+                "web_scripts_dir": {
+                    "type": "string",
+                    "description": "Directory containing web scripts for reports.",
+                    "help_text": "Path to the directory containing necessary web scripts to generate final HTML reports."
+                }
+            }
+        }
+    },
+    "allOf": [
+        {
+            "$ref": "#/definitions/input_output_options"
+        },
+        {
+            "$ref": "#/definitions/tool_options"
+        },
+        {
+            "$ref": "#/definitions/reference_options"
+        },
+        {
+            "$ref": "#/definitions/web_options"
+        }
+    ]
+}
