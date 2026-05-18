@@ -12,6 +12,14 @@ include { VARIANT_CALLING }      from './subworkflows/local/variant_calling.nf'
 include { ANNOTATION_PHYLOGENY } from './subworkflows/local/annotation_phylogeny.nf'
 include { REPORTING }            from './subworkflows/local/reporting.nf'
 
+// Print pipeline info
+log.info """\
+    M I T O G E X   N E X T F L O W   P I P E L I N E
+    =================================================
+    input        : ${params.input}
+    outdir       : ${params.outdir}
+    """
+    .stripIndent()
 // Print help message if requested
 if (params.help) {
     def String command = "nextflow run main.nf --input samplesheet.csv --fasta ref.fa -profile docker"
